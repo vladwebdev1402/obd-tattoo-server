@@ -1,0 +1,1 @@
+export const ImageUrl = "http://localhost:3050/api/image/"

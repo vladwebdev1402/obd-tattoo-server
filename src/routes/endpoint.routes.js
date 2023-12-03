@@ -1,0 +1,38 @@
+import { Router } from "express";
+import BrandRouter from "./brand.routes.js";
+import CategoryRouter from "./category.routes.js";
+import CityRouter from "./city.routes.js";
+import ItemRouter from "./item.routes.js";
+import ClientRouter from "./client.routes.js";
+import DeliveryRouter from "./delivery.routes.js";
+import ManagerRouter from "./manager.routes.js";
+import OrderRouter from "./order.routes.js";
+import PaymentRouter from "./payment.routes.js";
+import PromocodeRouter from "./promocode.routes.js";
+import ReviewRouter from "./review.routes.js";
+import ServiceRouter from "./service.routes.js";
+import StatusRouter from "./status.routes.js";
+import StreetRouter from "./street.routes.js";
+import FavoriteRouter from "./favorite.routes.js";
+import BasketRouter from "./basket.routes.js";
+import ImageRouter from "./image.routes.js";
+
+const EndpointRoutes = Router();
+EndpointRoutes.use("/api", BrandRouter);
+EndpointRoutes.use("/api", CategoryRouter);
+EndpointRoutes.use("/api", CityRouter);
+EndpointRoutes.use("/api", ItemRouter);
+EndpointRoutes.use("/api", ClientRouter);
+EndpointRoutes.use("/api", DeliveryRouter);
+EndpointRoutes.use("/api", ManagerRouter);
+EndpointRoutes.use("/api", OrderRouter);
+EndpointRoutes.use("/api", PaymentRouter);
+EndpointRoutes.use("/api", PromocodeRouter);
+EndpointRoutes.use("/api", ReviewRouter);
+EndpointRoutes.use("/api", ServiceRouter);
+EndpointRoutes.use("/api", StatusRouter);
+EndpointRoutes.use("/api", StreetRouter);
+EndpointRoutes.use("/api", FavoriteRouter);
+EndpointRoutes.use("/api", BasketRouter);
+EndpointRoutes.use("/api", ImageRouter);
+export default EndpointRoutes
