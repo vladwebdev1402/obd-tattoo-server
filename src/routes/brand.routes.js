@@ -40,7 +40,7 @@ BrandRouter.put("/brand",  async (req, res) => {
         }}
     );
     const data = await Brand.findOne({_id: req.body._id});
-    FileController.deleteFile(oldData.image);
+    if (data.image !== oldData.image) FileController.deleteFile(oldData.image);
     res.json(data);
 })
 

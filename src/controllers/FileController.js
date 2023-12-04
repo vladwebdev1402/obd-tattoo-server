@@ -16,7 +16,7 @@ export class FileController {
     static deleteFile = (urlFile) => {
         const filename = urlFile.split("/").at(-1);
         const __dirname = this.getRootDirname() + "/images/" + filename;
-        if (fs.existsSync(__dirname)) {
+        if (filename && fs.existsSync(__dirname)) {
             fs.unlinkSync(__dirname);
         }
     }
