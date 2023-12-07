@@ -18,23 +18,23 @@ AuthRouter.post("/signup", [
 ],async (req, res) => {
 
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({message: "Ошибка авторизации", errors })
+    if (!errors.isEmpty()) return res.status(400).json({message: "Ошибка авторизации", successfully: false, errors })
     try {
         const {login, password} = req.body;
         const client = await Client.findOne({login});
 
-    if (client) return res.status(401).json({message: "Пользователь с таким логином уже сущестувует"});
+    if (client) return res.status(401).json({message: "Пользователь с таким логином уже сущестувует", successfully: false});
     
     const salt = bcrypt.genSaltSync(7);
     const hashPassword = bcrypt.hashSync(password, salt);
      
     const newClient = await Client.create({login, password: hashPassword});
     
-    return res.status(200).json({message: "Пользователь успешно зарегистрирован"})
+    return res.status(200).json({message: "Пользователь успешно зарегистрирован", successfully: true})
 
     } catch (err) {
         console.log(err)
-        return res.status(400).json({message: "Ошибка регистрации", err})
+        return res.status(400).json({message: "Ошибка регистрации", err, successfully: false})
     }
 })
 
@@ -43,15 +43,15 @@ AuthRouter.post("/login", async (req, res) => {
         const {login, password} = req.body;
 
         const client = await Client.findOne({login});
-        if (!client) return res.status(401).json({message: "Пользователь с таким логином не обнаружен"});
+        if (!client) return res.status(401).json({message: "Пользователь с таким логином не обнаружен", successfully: false});
         const hashPassword = client.password;
         if (bcrypt.compareSync(password, hashPassword)) {
             const token = generateToken(client._id, client.role);
-            return res.status(200).json({message: "Пользователь успешно авторизирован", token});
-        } else return res.status(401).json({message: "Пароли не совпадают"});
+            return res.status(200).json({message: "Пользователь успешно авторизирован", token, successfully: true});
+        } else return res.status(401).json({message: "Пароли не совпадают", successfully: false});
 
     } catch (err) {
-        return res.status(400).json({message: "Ошибка регистрации"})
+        return res.status(400).json({message: "Ошибка регистрации", successfully: false})
     }
 
 })
