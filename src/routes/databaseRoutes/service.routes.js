@@ -1,6 +1,6 @@
 import { Router } from "express";
-import Service from "../model/ServiceModel.js";
-import { FileController } from "../controllers/FileController.js";
+import Service from "../../model/ServiceModel.js";
+import { FileController } from "../../controllers/FileController.js";
 import { ImageUrl } from "./ImageUrl.js";
 const ServiceRouter = Router();
 

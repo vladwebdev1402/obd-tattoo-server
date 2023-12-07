@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { FileController } from "../controllers/FileController.js";
+import { FileController } from "../../controllers/FileController.js";
 import fs from "fs";
 const upload = FileController.getMulterUpload();
 

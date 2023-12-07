@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Payment from "../model/PaymentModel.js";
+import Payment from "../../model/PaymentModel.js";
 const PaymentRouter = Router();
 
 PaymentRouter.get("/payment", async (req, res) => {

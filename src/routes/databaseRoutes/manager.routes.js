@@ -1,4 +1,4 @@
-import Manager from "../model/ManagerModel.js";
+import Manager from "../../model/ManagerModel.js";
 import { Router } from "express";
 
 const ManagerRouter = Router();

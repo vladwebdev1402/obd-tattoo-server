@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Client from "../model/ClientModel.js";
+import Client from "../../model/ClientModel.js";
 const ClientRouter = Router();
 
 ClientRouter.get("/client", async (req, res) => {

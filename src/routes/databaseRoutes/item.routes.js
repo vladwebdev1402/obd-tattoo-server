@@ -1,6 +1,6 @@
 import { Router } from "express";
-import Item from "../model/ItemModel.js";
-import { FileController } from "../controllers/FileController.js";
+import Item from "../../model/ItemModel.js";
+import { FileController } from "../../controllers/FileController.js";
 import { ImageUrl } from "./ImageUrl.js";
 const ItemRouter = Router();
 

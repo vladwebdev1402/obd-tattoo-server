@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Client from "../model/ClientModel.js"
+import Client from "../../model/ClientModel.js"
 const FavoriteRouter = Router();
 
 FavoriteRouter.get("/favorite", async (req, res) => {

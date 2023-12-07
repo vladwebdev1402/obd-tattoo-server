@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Status from "../model/StatusModel.js"
+import Status from "../../model/StatusModel.js"
 const StatusRouter = Router();
 
 StatusRouter.get("/status", async (req, res) => {

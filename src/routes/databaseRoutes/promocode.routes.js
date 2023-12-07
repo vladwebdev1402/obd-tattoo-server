@@ -1,7 +1,7 @@
 import { Router } from "express";
-import Promocode from "../model/PromocodeModel.js";
+import Promocode from "../../model/PromocodeModel.js";
 import { ImageUrl } from "./ImageUrl.js";
-import { FileController } from "../controllers/FileController.js";
+import { FileController } from "../../controllers/FileController.js";
 const PromocodeRouter = Router();
 
  

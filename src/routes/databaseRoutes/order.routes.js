@@ -1,4 +1,4 @@
-import Order from "../model/OrderModel.js";
+import Order from "../../model/OrderModel.js";
 import { Router } from "express";
 
 const OrderRouter = Router();

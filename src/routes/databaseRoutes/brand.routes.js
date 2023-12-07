@@ -1,7 +1,7 @@
 import { Router } from "express";
-import Brand from "../model/BrandModel.js";
+import Brand from "../../model/BrandModel.js";
 import { ImageUrl } from "./ImageUrl.js";
-import { FileController } from "../controllers/FileController.js";
+import { FileController } from "../../controllers/FileController.js";
 
 const BrandRouter = Router();
 BrandRouter.get("/brand", async (req, res) => {

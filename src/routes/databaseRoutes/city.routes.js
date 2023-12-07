@@ -1,5 +1,5 @@
 import { Router } from "express";
-import City from "../model/CityModel.js"
+import City from "../../model/CityModel.js"
 const CityRouter = Router();
 
 CityRouter.get("/city", async (req, res) => {

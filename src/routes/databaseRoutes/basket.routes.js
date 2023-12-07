@@ -1,6 +1,6 @@
 import { Router } from "express";
-import Client from "../model/ClientModel.js";
-import Item from "../model/ItemModel.js";
+import Client from "../../model/ClientModel.js";
+import Item from "../../model/ItemModel.js";
 const BasketRouter = Router();
 
 BasketRouter.get("/basket", async (req, res) => {

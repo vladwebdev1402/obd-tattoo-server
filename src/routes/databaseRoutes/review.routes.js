@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Review from "../model/ReviewModel.js";
+import Review from "../../model/ReviewModel.js";
 const ReviewRouter = Router();
 
 ReviewRouter.get("/review", async (req, res) => {

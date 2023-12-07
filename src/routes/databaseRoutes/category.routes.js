@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Category from "../model/CategoryModel.js"
+import Category from "../../model/CategoryModel.js"
 const CategoryRouter = Router();
 
 CategoryRouter.get("/category", async (req, res) => {
