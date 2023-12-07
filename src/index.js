@@ -2,15 +2,17 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import EntrypointRoutes from "./routes/databaseRoutes/entrypoint.routes.js";
+import AuthRouter from "./routes/auth/auth.routes.js";
+import { URI } from "../constants.js";
 const app = express();
 app.use(express.json());
 app.use(cors());
 const PORT = 3050;
-const URI = "mongodb://127.0.0.1:27017/tattoo"
 const main = async () => {
     try {
         await mongoose.connect(URI);
         app.use("/", EntrypointRoutes)
+        app.use("/auth", AuthRouter)
 
         app.get("/", async (req, res) => {
             res.json("Server start on port " + PORT);

@@ -12,9 +12,9 @@ const ClientSchema = new Schema({
   floor: Number,
   intercom: Number,
   login: String,
-  role: {type: String, required: true, default: 'USER'},
-  login: String,
-  password: String,
+  role: {type: String, required: true, default: 'CLIENT'},
+  login: {type: String, required: true},
+  password: {type: String, required: true},
 
   city: { type: Schema.Types.ObjectId, ref: "City" },
   street: { type: Schema.Types.ObjectId, ref: "Street" },

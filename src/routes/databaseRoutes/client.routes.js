@@ -1,8 +1,9 @@
 import { Router } from "express";
 import Client from "../../model/ClientModel.js";
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const ClientRouter = Router();
 
-ClientRouter.get("/client", async (req, res) => {
+ClientRouter.get("/client", AuthMiddleware(["DATABASE_ADMIN"]), async (req, res) => {
     const data = await Client.find();
     res.json(data);
 })
@@ -18,7 +19,7 @@ ClientRouter.post("/client", async (req, res) => {
 
 })
 
-ClientRouter.delete("/client", async (req, res) => {
+ClientRouter.delete("/client", AuthMiddleware(["DATABASE_ADMIN"]), async (req, res) => {
     const data = await Client.deleteOne().where(
         {
             _id: req.body._id
