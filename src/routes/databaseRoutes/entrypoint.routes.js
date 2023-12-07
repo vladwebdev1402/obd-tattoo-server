@@ -16,6 +16,7 @@ import StreetRouter from "./street.routes.js";
 import FavoriteRouter from "./favorite.routes.js";
 import BasketRouter from "./basket.routes.js";
 import ImageRouter from "./image.routes.js";
+import RoleRouter from "./role.routes.js";
 
 const EntrypointRoutes = Router();
 EntrypointRoutes.use("/api", BrandRouter);
@@ -35,4 +36,5 @@ EntrypointRoutes.use("/api", StreetRouter);
 EntrypointRoutes.use("/api", FavoriteRouter);
 EntrypointRoutes.use("/api", BasketRouter);
 EntrypointRoutes.use("/api", ImageRouter);
+EntrypointRoutes.use("/api", RoleRouter);
 export default EntrypointRoutes
