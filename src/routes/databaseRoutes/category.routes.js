@@ -1,32 +1,33 @@
 import { Router } from "express";
 import Category from "../../model/CategoryModel.js"
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const CategoryRouter = Router();
 
 CategoryRouter.get("/category", async (req, res) => {
     const data = await Category.find();
-    res.json(data);
+    return res.json({data, message: "Категории получены"});
 })
 
-CategoryRouter.post("/category", async (req, res) => {
+CategoryRouter.post("/category", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
     const data = await Category.create(
         {
             name: req.body.name
         }
     );
-    res.json(data);
+    return res.json({data, message: "Категория успешно создана"});
 })
 
-CategoryRouter.delete("/category", async (req, res) => {
-    const data = await Category.deleteOne().where(
+CategoryRouter.delete("/category", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+    const data = await Category.findOneAndDelete().where(
         {
             _id: req.body._id
         }
     );
-    res.json(data);
+    return res.json({data, message: "Категория успешно удалена"});
 })
 
-CategoryRouter.put("/category", async (req, res) => {
-    const data = await Category.updateOne(
+CategoryRouter.put("/category", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+    const data = await Category.findOneAndUpdate(
         {
             _id: req.body._id
         },
@@ -34,7 +35,7 @@ CategoryRouter.put("/category", async (req, res) => {
             name: req.body.name
         }}
     );
-    res.json(data);
+    return res.json({data, message: "Категория успешно обновлена"});
 })
 
 

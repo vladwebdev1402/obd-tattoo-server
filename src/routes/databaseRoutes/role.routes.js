@@ -1,12 +1,13 @@
 import { Router } from "express";
 import Role from "../../model/RoleModel.js";
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 
 const RoleRouter = Router();
 
-RoleRouter.get("/role", async (req, res) => {
+RoleRouter.get("/role", AuthMiddleware(["SUPER_ADMIN"], []), async (req, res) => {
     try {
         const data = await Role.find();
-        res.json(data);
+        return res.json({data, message: "Роли успешно получены"});
     } catch (err) {
     
         res.json({message: err.message});
@@ -15,7 +16,7 @@ RoleRouter.get("/role", async (req, res) => {
     
 })
 
-RoleRouter.post("/role", async (req, res) => {
+RoleRouter.post("/role", AuthMiddleware(["SUPER_ADMIN"], {}), async (req, res) => {
     try {
         const value = req.body.value;
 
@@ -23,7 +24,7 @@ RoleRouter.post("/role", async (req, res) => {
             value
         });
     
-        res.json(data);
+        return res.json({data, message: "Роль успешно создана"});
     } catch (err) {
     
         res.json({message: err.message});
@@ -31,7 +32,7 @@ RoleRouter.post("/role", async (req, res) => {
    
 })
 
-RoleRouter.put("/role", async (req, res) => {
+RoleRouter.put("/role", AuthMiddleware(["SUPER_ADMIN"], {}), async (req, res) => {
     try {
         const {_id, value} = req.body;
 
@@ -39,7 +40,7 @@ RoleRouter.put("/role", async (req, res) => {
             _id
         }, {$set: {value}});
     
-        res.json(data);
+        return res.json({data, message: "Роль успешно обновлена"});
 
     } catch (err) {
     
@@ -48,7 +49,7 @@ RoleRouter.put("/role", async (req, res) => {
    
 })
 
-RoleRouter.delete("/role", async (req, res) => {
+RoleRouter.delete("/role", AuthMiddleware(["SUPER_ADMIN"], {}), async (req, res) => {
     try {
         const {_id } = req.body;
 
@@ -56,7 +57,7 @@ RoleRouter.delete("/role", async (req, res) => {
         _id
     });
 
-    res.json(data);
+    return res.json({data, message: "Роль успешно удалена"});
 
     } catch (err) {
     

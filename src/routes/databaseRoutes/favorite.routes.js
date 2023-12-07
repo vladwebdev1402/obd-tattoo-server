@@ -1,27 +1,28 @@
 import { Router } from "express";
 import Client from "../../model/ClientModel.js"
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const FavoriteRouter = Router();
 
-FavoriteRouter.get("/favorite", async (req, res) => {
+FavoriteRouter.get("/favorite", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []), async (req, res) => {
     const data = await Client.find({
         _id: req.query.id
     });
-    res.json(data);
+    return res.json({data, message: "Избранные товары успешно получены"});
 })
 
-FavoriteRouter.post("/favorite", async (req, res) => {
+FavoriteRouter.post("/favorite", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
     const {client, item} = req.body
-    const data = await Client.updateOne(
+    const data = await Client.findOneAndUpdate(
         { 
             _id: client
          }, {$push: {favorites: item}}
     );
-    res.json(data);
+    return res.json({data, message: "Избранный товар успешно добавлен"});
 })
 
-FavoriteRouter.delete("/favorite", async (req, res) => {
+FavoriteRouter.delete("/favorite", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
     const {client, item} = req.body
-    const data = await Client.updateOne(
+    const data = await Client.findOneAndDelete(
         {
             _id: client
         },
@@ -29,7 +30,7 @@ FavoriteRouter.delete("/favorite", async (req, res) => {
             favorites: item
         }}
     );
-    res.json(data);
+    return res.json({data, message: "Избранный товар успешно удалён"});
 })
 
 

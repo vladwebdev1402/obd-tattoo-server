@@ -1,29 +1,32 @@
 import { Router } from "express";
 import Delivery from "../../model/DeliveryModel.js";
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 
 const DeliveryRouter = Router();
 
-DeliveryRouter.get("/delivery", async (req, res) => {
+DeliveryRouter.get("/delivery", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []), async (req, res) => {
   const data = await Delivery.find();
-  res.json(data);
+  return res.json({data, message: "Категории доставки успешно получены"});
 });
 
-DeliveryRouter.post("/delivery", async (req, res) => {
+DeliveryRouter.post("/delivery", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { name, promt } = req.body;
   const data = await Delivery.create({ name, promt });
-  res.json(data);
+  return res.json({data, message: "Категория доставки успешно создана"});
+
 });
 
-DeliveryRouter.delete("/delivery", async (req, res) => {
-  const data = await Delivery.deleteOne().where({
+DeliveryRouter.delete("/delivery", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+  const data = await Delivery.findOneAndDelete().where({
     _id: req.body._id,
   });
-  res.json(data);
+  return res.json({data, message: "Категория доставки успешно удалена"});
+
 });
 
-DeliveryRouter.put("/delivery", async (req, res) => {
+DeliveryRouter.put("/delivery", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { name, promt } = req.body;
-  const data = await Delivery.updateOne(
+  const data = await Delivery.findOneAndUpdate(
     {
       _id: req.body._id,
     },
@@ -34,7 +37,8 @@ DeliveryRouter.put("/delivery", async (req, res) => {
       },
     }
   );
-  res.json(data);
+  return res.json({data, message: "Категория доставки успешно обновлена"});
+
 });
 
 export default DeliveryRouter;

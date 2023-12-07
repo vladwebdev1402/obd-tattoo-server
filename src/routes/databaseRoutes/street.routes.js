@@ -1,32 +1,33 @@
 import { Router } from "express";
 import Street from "../../model/StreetModel.js"
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const StreetRouter = Router();
 
-StreetRouter.get("/street", async (req, res) => {
+StreetRouter.get("/street", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []), async (req, res) => {
     const data = await Street.find();
-    res.json(data);
+    return res.json({data, message: "Улицы успешно получены"});
 })
 
-StreetRouter.post("/street", async (req, res) => {
+StreetRouter.post("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
     const {name, city} = req.body;
     const data = await Street.create(
         {
             name, city
         }
     );
-    res.json(data);
+    return res.json({data, message: "Улица успешно создана"});
 })
 
-StreetRouter.delete("/street", async (req, res) => {
+StreetRouter.delete("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
     const data = await Street.deleteOne().where(
         {
             _id: req.body._id
         }
     );
-    res.json(data);
+    return res.json({data, message: "Улица успешно удалена"});
 })
 
-StreetRouter.put("/street", async (req, res) => {
+StreetRouter.put("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
     const {name, city} = req.body;
     const data = await Street.updateOne(
         {
@@ -36,7 +37,7 @@ StreetRouter.put("/street", async (req, res) => {
             name, city
         }}
     );
-    res.json(data);
+    return res.json({data, message: "Улица успешно обновлена"});
 })
 
 

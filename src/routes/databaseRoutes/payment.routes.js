@@ -1,31 +1,32 @@
 import { Router } from "express";
 import Payment from "../../model/PaymentModel.js";
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const PaymentRouter = Router();
 
-PaymentRouter.get("/payment", async (req, res) => {
+PaymentRouter.get("/payment", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []), async (req, res) => {
   const data = await Payment.find();
-  res.json(data);
+  return res.json({data, message: "Категории оплаты успешно получены"});
 });
 
-PaymentRouter.post("/payment", async (req, res) => {
+PaymentRouter.post("/payment", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { name, promt } = req.body;
   const data = await Payment.create({
     name,
     promt,
   });
-  res.json(data);
+  return res.json({data, message: "Категория оплаты успешно создана"});
 });
 
-PaymentRouter.delete("/payment", async (req, res) => {
-  const data = await Payment.deleteOne().where({
+PaymentRouter.delete("/payment", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+  const data = await Payment.findOneAndDelete().where({
     _id: req.body._id,
   });
-  res.json(data);
+  return res.json({data, message: "Категория оплаты успешно удалена"});
 });
 
-PaymentRouter.put("/payment", async (req, res) => {
+PaymentRouter.put("/payment", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { name, promt } = req.body;
-  const data = await Payment.updateOne(
+  const data = await Payment.findOneAndUpdate(
     {
       _id: req.body._id,
     },
@@ -36,7 +37,7 @@ PaymentRouter.put("/payment", async (req, res) => {
       },
     }
   );
-  res.json(data);
+  return res.json({data, message: "Категория оплаты успешно обновлена"});
 });
 
 export default PaymentRouter;

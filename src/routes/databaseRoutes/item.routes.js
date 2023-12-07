@@ -2,14 +2,15 @@ import { Router } from "express";
 import Item from "../../model/ItemModel.js";
 import { FileController } from "../../controllers/FileController.js";
 import { ImageUrl } from "./ImageUrl.js";
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const ItemRouter = Router();
 
 ItemRouter.get("/item", async (req, res) => {
   const data = await Item.find();
-  res.json(data);
+  return res.json({data, message: "Товары успешно получены"});
 });
 
-ItemRouter.post("/item", async (req, res) => {
+ItemRouter.post("/item", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const {
     name,
     description,
@@ -38,18 +39,18 @@ ItemRouter.post("/item", async (req, res) => {
       hot: marcers.hot ?? false,
     },
   });
-  res.json(data);
+  return res.json({data, message: "Товар успешно создан"});
 });
 
-ItemRouter.delete("/item", async (req, res) => {
+ItemRouter.delete("/item", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const data = await Item.findOneAndDelete().where({
     _id: req.body._id,
   });
   FileController.deleteFile(data.image);
-  res.json(data);
+  return res.json({data, message: "Товар успешно удалён"});
 });
 
-ItemRouter.put("/item", async (req, res) => {
+ItemRouter.put("/item", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const {
     _id,
     name,
@@ -89,7 +90,7 @@ ItemRouter.put("/item", async (req, res) => {
   );
   const data = await Item.findOne({ _id: req.body._id });
   if (data.image !== oldData.image) FileController.deleteFile(oldData.image);
-  res.json(data);
+  return res.json({data, message: "Товар успешно обновлён"});
 });
 
 export default ItemRouter;

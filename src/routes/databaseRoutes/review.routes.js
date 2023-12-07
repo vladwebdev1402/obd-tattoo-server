@@ -1,31 +1,32 @@
 import { Router } from "express";
 import Review from "../../model/ReviewModel.js";
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const ReviewRouter = Router();
 
 ReviewRouter.get("/review", async (req, res) => {
   const data = await Review.find();
-  res.json(data);
+  return res.json({data, message: "Отзывы успешно получены"});
 });
 
-ReviewRouter.post("/review", async (req, res) => {
+ReviewRouter.post("/review", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
   const { client, description } = req.body;
   const data = await Review.create({
     client,
     description,
   });
-  res.json(data);
+  return res.json({data, message: "Отзыв успешно создан"});
 });
 
-ReviewRouter.delete("/review", async (req, res) => {
-  const data = await Review.deleteOne().where({
+ReviewRouter.delete("/review", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
+  const data = await Review.findOneAndDelete().where({
     _id: req.body._id,
   });
-  res.json(data);
+  return res.json({data, message: "Отзыв успешно удалён"});
 });
 
-ReviewRouter.put("/review", async (req, res) => {
+ReviewRouter.put("/review", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
   const { client, description } = req.body;
-  const data = await Review.updateOne(
+  const data = await Review.findOneAndUpdate(
     {
       _id: req.body._id,
     },
@@ -36,7 +37,7 @@ ReviewRouter.put("/review", async (req, res) => {
       },
     }
   );
-  res.json(data);
+  return res.json({data, message: "Отзыв успешно отредактирован"});
 });
 
 export default ReviewRouter;

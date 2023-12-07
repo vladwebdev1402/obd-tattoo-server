@@ -1,3 +1,4 @@
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 import Manager from "../../model/ManagerModel.js";
 import { Router } from "express";
 
@@ -5,10 +6,10 @@ const ManagerRouter = Router();
 
 ManagerRouter.get("/manager", async (req, res) => {
   const data = await Manager.find();
-  res.json(data);
+  return res.json({data, message: "Менеджеры успешно получены"});
 });
 
-ManagerRouter.post("/manager", async (req, res) => {
+ManagerRouter.post("/manager", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { name, surname, patroname, mail, phone, viber, telegram, whatsapp } =
     req.body;
   const data = await Manager.create({
@@ -21,20 +22,20 @@ ManagerRouter.post("/manager", async (req, res) => {
     telegram,
     whatsapp,
   });
-  res.json(data);
+  return res.json({data, message: "Менеджер успешно создан"});
 });
 
-ManagerRouter.delete("/manager", async (req, res) => {
-  const data = await Manager.deleteOne().where({
+ManagerRouter.delete("/manager", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+  const data = await Manager.findOneAndDelete().where({
     _id: req.body._id,
   });
-  res.json(data);
+  return res.json({data, message: "Менеджер успешно удалён"});
 });
 
-ManagerRouter.put("/manager", async (req, res) => {
+ManagerRouter.put("/manager", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
     const { name, surname, patroname, mail, phone, viber, telegram, whatsapp } =
     req.body;
-  const data = await Manager.updateOne(
+  const data = await Manager.findOneAndUpdate(
     {
       _id: req.body._id,
     },
@@ -51,7 +52,7 @@ ManagerRouter.put("/manager", async (req, res) => {
       },
     }
   );
-  res.json(data);
+  return res.json({data, message: "Менеджер успешно обновлён"});
 });
 
 export default ManagerRouter;

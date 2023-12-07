@@ -1,33 +1,34 @@
 import { Router } from "express";
 import Status from "../../model/StatusModel.js"
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 const StatusRouter = Router();
 
-StatusRouter.get("/status", async (req, res) => {
+StatusRouter.get("/status", AuthMiddleware(["DATABASE_ADMIN"], []), async (req, res) => {
     const data = await Status.find();
-    res.json(data);
+    return res.json({data, message: "Статусы заказа успешно получены"});
 })
 
-StatusRouter.post("/status", async (req, res) => {
+StatusRouter.post("/status", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
     const {name} = req.body;
     const data = await Status.create(
         {
             name
         }
     );
-    res.json(data);
+    return res.json({data, message: "Статус заказа успешно создан"});
 })
 
-StatusRouter.delete("/status", async (req, res) => {
-    const data = await Status.deleteOne().where(
+StatusRouter.delete("/status", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+    const data = await Status.findOneAndDelete().where(
         {
             _id: req.body._id
         }
     );
-    res.json(data);
+    return res.json({data, message: "Статусы заказа успешно удалён"});
 })
 
-StatusRouter.put("/status", async (req, res) => {
-    const data = await Status.updateOne(
+StatusRouter.put("/status", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+    const data = await Status.findOneAndUpdate(
         {
             _id: req.body._id
         },
@@ -35,7 +36,7 @@ StatusRouter.put("/status", async (req, res) => {
             name: req.body.name
         }}
     );
-    res.json(data);
+    return res.json({data, message: "Статусы заказа успешно обновлён"});
 })
 
 

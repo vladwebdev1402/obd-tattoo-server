@@ -1,20 +1,21 @@
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 import Order from "../../model/OrderModel.js";
 import { Router } from "express";
 
 const OrderRouter = Router();
 
-OrderRouter.get("/order", async (req, res) => {
+OrderRouter.get("/order", AuthMiddleware(["DATABASE_ADMIN"], []), async (req, res) => {
   const data = await Order.find();
-  res.json(data);
+  return res.json({data, message: "Заказы успешно получены"});
 });
 
 
-OrderRouter.get("/order/client", async (req, res) => {
+OrderRouter.get("/order/client", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []), async (req, res) => {
   const data = await Order.find({client: req.query.client});
-  res.json(data);
+  return res.json({data, message: "Заказы успешно получены"});
 });
 
-OrderRouter.post("/order", async (req, res) => {
+OrderRouter.post("/order", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
   const date = new Date();
 
   const number = getUniqueNumber();
@@ -30,20 +31,20 @@ OrderRouter.post("/order", async (req, res) => {
     promocode,
     status: "655f6146a4d2868df197b7be",
   });
-  res.json(data);
+  return res.json({data, message: "Заказ успешно оформлен"});
 });
 
-OrderRouter.delete("/order", async (req, res) => {
-  const data = await Order.deleteOne().where({
+OrderRouter.delete("/order", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
+  const data = await Order.findOneAndDelete().where({
     _id: req.body._id,
   });
-  res.json(data);
+  return res.json({data, message: "Заказ успешно удалён"});
 });
 
-OrderRouter.put("/order", async (req, res) => {
+OrderRouter.put("/order", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { basket, client, service, payment, delivery, promocode, status } =
     req.body;
-  const data = await Order.updateOne(
+  const data = await Order.findOneAndUpdate(
     {
       _id: req.body._id,
     },
@@ -59,7 +60,7 @@ OrderRouter.put("/order", async (req, res) => {
       },
     }
   );
-  res.json(data);
+  return res.json({data, message: "Заказ успешно обновлён"});
 });
 
 export default OrderRouter;
