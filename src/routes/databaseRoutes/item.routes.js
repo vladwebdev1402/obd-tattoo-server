@@ -3,11 +3,23 @@ import Item from "../../model/ItemModel.js";
 import { FileController } from "../../controllers/FileController.js";
 import { ImageUrl } from "./ImageUrl.js";
 import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
+import { ItemFiltersMiddleware } from "../../middleware/ItemFiltersMiddleware.js";
 const ItemRouter = Router();
 
-ItemRouter.get("/item", async (req, res) => {
-  const data = await Item.find();
-  return res.json({data, message: "Товары успешно получены"});
+ItemRouter.get("/item", ItemFiltersMiddleware, async (req, res) => {
+  try {
+    const mongoFilter = req.filters.mongoFilter; 
+    const limit = req.filters.limit; 
+   
+    const data = await Item.find(mongoFilter).limit(limit);
+
+    return res.json({data, message: "Товары успешно получены"})
+  }
+  catch (err) {
+    console.log(err.message);
+    return res.json({data: [], message: "Ошибка на сервере при получении товаров"});
+  }
+;
 });
 
 ItemRouter.post("/item", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
