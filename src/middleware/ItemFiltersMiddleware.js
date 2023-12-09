@@ -1,11 +1,12 @@
 export const ItemFiltersMiddleware = (req, res, next) => {
-    const {name, no, promotion, news, discount, hot, limit, startPrice, endPrice, category, brand} = req.query;
+    const {_id, name, no, promotion, news, discount, hot, limit, startPrice, endPrice, category, brand} = req.query;
 
     const mongoFilter = {
         name: {$regex: name ?? "", $options: 'i'},
         $and: [{price: {$gt: Number(startPrice) || 0}}, {price: {$lt: Number(endPrice) || 999999}}],
     }
 
+    if (_id) mongoFilter._id = _id;
     if (category) mongoFilter.category = category;
     if (brand) mongoFilter.brand = brand;
 
