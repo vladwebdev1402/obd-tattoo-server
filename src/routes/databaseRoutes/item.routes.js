@@ -17,7 +17,7 @@ ItemRouter.get("/item", ItemFiltersMiddleware, async (req, res) => {
   }
   catch (err) {
     console.log(err.message);
-    return res.json({data: [], message: "Ошибка на сервере при получении товаров"});
+    return res.status(500).json({data: [], message: "Ошибка на сервере при получении товаров"});
   }
 ;
 });
