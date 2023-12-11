@@ -10,7 +10,6 @@ ItemRouter.get("/item", ItemFiltersMiddleware, async (req, res) => {
   try {
     const mongoFilter = req.filters.mongoFilter; 
     const limit = req.filters.limit; 
-   
     const data = await Item.find(mongoFilter).limit(limit);
 
     return res.json({data, message: "Товары успешно получены"})

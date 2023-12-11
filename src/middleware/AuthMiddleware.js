@@ -14,7 +14,10 @@ export const AuthMiddleware = (roles, data) => {
           .status(403)
           .json({data, message: "Ошибка аутентификации. Токен не предоставлен" });
       const user = DecodeToken(token);
-      if (roles.indexOf(user.role) !== -1) next();
+      if (roles.indexOf(user.role) !== -1) {
+        req.user_id = user._id;
+        next();
+      }
       else
         return res
           .status(403)

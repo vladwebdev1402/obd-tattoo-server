@@ -18,7 +18,7 @@ AuthRouter.post("/signup", [
 ],async (req, res) => {
 
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({message: "Ошибка авторизации", successfully: false, errors })
+    if (!errors.isEmpty()) return res.status(400).json({message: "Ошибка регистрации", successfully: false, errors })
     try {
         const {login, password} = req.body;
         const client = await Client.findOne({login});
@@ -51,7 +51,7 @@ AuthRouter.post("/login", async (req, res) => {
         } else return res.status(401).json({message: "Пароли не совпадают", successfully: false});
 
     } catch (err) {
-        return res.status(400).json({message: "Ошибка регистрации", successfully: false})
+        return res.status(400).json({message: "Ошибка авторизации", successfully: false})
     }
 
 })
