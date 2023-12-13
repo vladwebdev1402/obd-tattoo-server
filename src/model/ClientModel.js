@@ -11,12 +11,14 @@ const ClientSchema = new Schema({
   entrance: {type: Number, default: 0},
   floor: {type: Number, default: 0},
   intercom: {type: Number, default: 0},
+  city: { type: Schema.Types.ObjectId, ref: "City" },
+  street: { type: Schema.Types.ObjectId, ref: "Street" },
+  
   role: {type: String, required: true, default: 'CLIENT'},
   login: {type: String, required: true},
   password: {type: String, required: true},
 
-  city: { type: Schema.Types.ObjectId, ref: "City" },
-  street: { type: Schema.Types.ObjectId, ref: "Street" },
+  
   basket: [
     { item: { type: Schema.Types.ObjectId, ref: "Item" }, 
     count: Number },

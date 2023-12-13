@@ -11,6 +11,24 @@ BasketRouter.get("/basket", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []), as
   return res.json({data: data[0].basket, message: "Корзина получена"});
 });
 
+
+BasketRouter.get("/basket/info", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []), async (req, res) => {
+  const data = (await Client.find({
+    _id: req.user_id,
+  }).select(["basket", "-_id"]))[0].basket;
+  let allPrice = 0;
+  let count = 0;
+  for (let i = 0; i < data.length; i++) {
+    const basketItem = data[i];
+    const shopItem = (await Item.find({_id: basketItem.item}))[0];
+    count += basketItem.count;
+    allPrice += shopItem.price * basketItem.count;
+  }
+
+
+  return res.json({data: {count, allPrice}, message: "Корзина получена"});
+});
+
 BasketRouter.post("/basket", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
   const { item, count } = req.body;
   const shopItem = (await Item.find({_id: item}))[0];
