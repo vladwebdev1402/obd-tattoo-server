@@ -31,8 +31,8 @@ const OrderSchema = new Schema({
   },
   client: { type: Schema.Types.ObjectId, ref: "Client" },
   service: { type: Schema.Types.ObjectId, ref: "Service" },
-  payment: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
-  delivery: { type: Schema.Types.ObjectId, ref: "Delivery", required: true },
+  payment: { type: Schema.Types.ObjectId, default: "", ref: "Payment", required: true },
+  delivery: { type: Schema.Types.ObjectId, default: "", ref: "Delivery", required: true },
   promocode: { type: Schema.Types.ObjectId, ref: "Promocode" },
   status: { type: Schema.Types.ObjectId, ref: "Status", required: true },
 });
