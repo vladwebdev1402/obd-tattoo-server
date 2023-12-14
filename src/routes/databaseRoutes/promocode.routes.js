@@ -71,6 +71,7 @@ PromocodeRouter.post(
   AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}),
   async (req, res) => {
     const { promocode } = req.body;
+    const promo = await Promocode.findOne({promocode});
     const basket = (await Client.findOne({ _id: req.user_id })).basket;
     if (promocode === "IAMHEDGEHOG") {
       const _idNeedle = (await Category.findOne({ name: "Тату иглы" }))._id;
@@ -89,9 +90,9 @@ PromocodeRouter.post(
 
       if (countNeedles >= 5 && countTips >= 5) {
         // установить скидку в корзине
-        return res.json({ message: "Промокод успешно активирован" });
+        return res.json({data: {discount: promo.discount, _id: promo._id}, message: "Промокод успешно активирован" });
       } else {
-        return res.json({
+        return res.json({data: {discount: 0, _id: ""},
           message: `В корзине недостаточно товаров категорий: ${
             countNeedles < 5 ? 5 - countNeedles + " Тату иглы" : ""
           }${countTips < 5 ? ", " + `${5 - countTips}` + " Тату наконечники " : ""}`,
@@ -107,9 +108,9 @@ PromocodeRouter.post(
 
       if (allPrice >= 5500) {
         // установить скидку в корзине
-        return res.json({ message: "Промокод успешно активирован" });
+        return res.json({data: {discount: promo.discount, _id: promo._id}, message: "Промокод успешно активирован" });
       } else {
-        return res.json({
+        return res.json({data: {discount: 0, _id: ""},
           message: `Недостаточно суммы для активации промокода: ${5500 - allPrice} рублей`,
         });
       }
@@ -130,9 +131,9 @@ PromocodeRouter.post(
 
       if (countNeedles >= 2 && countSet >= 2) {
         // установить скидку в корзине
-        return res.json({ message: "Промокод успешно активирован" });
+        return res.json({data: {discount: promo.discount, _id: promo._id}, message: "Промокод успешно активирован" });
       } else {
-        return res.json({
+        return res.json({data: {discount: 0, _id: ""},
           message: `В корзине недостаточно товаров категорий: ${
             countNeedles < 2 ? 2 - countNeedles + " Тату иглы" : ""
           }${countSet < 2 ? ", " + `${2 - countSet}` + " Наборы для татуировок " : ""}`,
@@ -140,7 +141,7 @@ PromocodeRouter.post(
       }
     }
 
-    return res.json({ message: "Промокод не найден" });
+    return res.json({data: {discount: 0, _id: ""}, message: "Промокод не найден" });
   }
 );
 

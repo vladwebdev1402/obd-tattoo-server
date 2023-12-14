@@ -107,6 +107,15 @@ OrderRouter.delete(
   }
 );
 
+OrderRouter.delete(
+  "/order/all",
+  AuthMiddleware(["DATABASE_ADMIN"], {}),
+  async (req, res) => {
+    const data = await Order.deleteMany();
+    return res.json({ data, message: "Заказы успешно удалён" });
+  }
+);
+
 OrderRouter.put(
   "/order",
   AuthMiddleware(["DATABASE_ADMIN"], {}),
