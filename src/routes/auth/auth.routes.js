@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
 import { SECRET_KEY } from "../../../constants.js";
+import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
+
 const AuthRouter = Router();
 
 const generateToken = (_id, role) => {
@@ -37,6 +39,15 @@ AuthRouter.post("/signup", [
         return res.status(400).json({message: "Ошибка регистрации", err, successfully: false})
     }
 })
+
+AuthRouter.get("/check", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {successfully: false}), (req, res) => {
+    res.json({message: "Пользователь авторизирован", successfully: true})
+})
+
+AuthRouter.get("/check/admin", AuthMiddleware(["DATABASE_ADMIN"], {successfully: false}), (req, res) => {
+    res.json({message: "Пользователь авторизирован", successfully: true})
+})
+
 
 AuthRouter.post("/login", async (req, res) => {
     try {
