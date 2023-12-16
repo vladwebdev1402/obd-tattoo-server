@@ -2,6 +2,7 @@ import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 import Item from "../../model/ItemModel.js";
 import Order from "../../model/OrderModel.js";
 import Client from "../../model/ClientModel.js";
+import Promocode from "../../model/PromocodeModel.js";
 import { Router } from "express";
 
 const OrderRouter = Router();
@@ -10,7 +11,10 @@ OrderRouter.get(
   "/order",
   AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []),
   async (req, res) => {
-    const data = await Order.find({ client: req.user_id });
+    const data = await Order.find({ client: req.user_id })
+    .populate({path: "contacts.city", select: "name -_id"})
+    .populate({path: "contacts.street", select: "name -_id"})
+    .populate({path: "status", select: "name -_id"});
     return res.json({ data, message: "Заказы успешно получены" });
   }
 );
@@ -36,7 +40,7 @@ OrderRouter.post(
         req.body;
       let allPrice = 0;
       let countItems = 0;
-
+      const promoDiscount = promocode ? (await Promocode.findOne({_id: promocode})).discount : 0;
       // подсчёт информации о корзине 
       for (let i = 0; i < basket.length; i++) {
         const basketItem = basket[i];
@@ -46,7 +50,7 @@ OrderRouter.post(
         if (shopItem.count < basketItem.count) {
           return res.status(400).json({
             data: null,
-            message: `Количество товара ${shopItem.name} на складе ${shopItem.count}. Измените количество товара`,
+            message: `Количество товара ${shopItem.name} на складе ${shopItem.count}. Измените количество этого товара в корзине товара`,
           });
         }
         countItems += basketItem.count;
@@ -74,7 +78,11 @@ OrderRouter.post(
         }}
       )
 
+      const promo = {}
+      if (promocode) promo.promocode = promocode
+
       const data = await Order.create({
+        ...promo,
         date,
         number,
         client: req.user_id,
@@ -83,8 +91,7 @@ OrderRouter.post(
         service,
         payment: payment ?? "656f32e18f35a7c471c6f566",
         delivery: delivery ?? "656f32878f35a7c471c6f558",
-        promocode,
-        allPrice,
+        allPrice: allPrice - (allPrice * promoDiscount / 100),
         countItems,
         status: "655f6146a4d2868df197b7be",
       });
@@ -138,7 +145,7 @@ OrderRouter.put(
         },
       }
     );
-    return res.json({ data, message: "Заказ успешно обновлён" });
+    return res.status(400).json({ data, message: "Заказ успешно обновлён" });
   }
 );
 
