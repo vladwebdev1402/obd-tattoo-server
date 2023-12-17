@@ -12,9 +12,9 @@ OrderRouter.get(
   AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], []),
   async (req, res) => {
     const data = await Order.find({ client: req.user_id })
-    .populate({path: "contacts.city", select: "name -_id"})
-    .populate({path: "contacts.street", select: "name -_id"})
-    .populate({path: "status", select: "name -_id"});
+      .populate({ path: "contacts.city", select: "name -_id" })
+      .populate({ path: "contacts.street", select: "name -_id" })
+      .populate({ path: "status", select: "name -_id" });
     return res.json({ data, message: "Заказы успешно получены" });
   }
 );
@@ -24,19 +24,25 @@ OrderRouter.get(
   AuthMiddleware(["DATABASE_ADMIN"], []),
   async (req, res) => {
     try {
-      const {start, end} = req.query;
-      const filter = {}
+      const { start, end } = req.query;
+      const filter = {};
       if (start && end) {
-        filter.date = { $and: [{date: {$gt: new Date(start)}}, {date: {$lt: new Date(end)}}] };
+        filter.date = {
+          $and: [
+            { date: { $gt: new Date(start) } },
+            { date: { $lt: new Date(end) } },
+          ],
+        };
       }
-      const data = await Order.find(filter.date);
+      const data = await Order.find(filter.date)
+        .populate({ path: "basket.item", select: "name" })
+        .populate({ path: "contacts.city", select: "name -_id" })
+        .populate({ path: "contacts.street", select: "name -_id" });
       return res.json({ data, message: "Заказы успешно получены" });
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error.message);
       return res.json({ data: [], message: "Ошибка при получении заказов" });
     }
-   
   }
 );
 
@@ -47,13 +53,15 @@ OrderRouter.post(
     try {
       const date = new Date();
       const number = getUniqueNumber();
-      
+
       const { basket, contacts, service, payment, delivery, promocode } =
         req.body;
       let allPrice = 0;
       let countItems = 0;
-      const promoDiscount = promocode ? (await Promocode.findOne({_id: promocode})).discount : 0;
-      // подсчёт информации о корзине 
+      const promoDiscount = promocode
+        ? (await Promocode.findOne({ _id: promocode })).discount
+        : 0;
+      // подсчёт информации о корзине
       for (let i = 0; i < basket.length; i++) {
         const basketItem = basket[i];
         const shopItem = (await Item.find({ _id: basketItem.item }))[0];
@@ -70,28 +78,36 @@ OrderRouter.post(
       }
       // уменьшение количества товаров на складе согласно корзине пользователя
       basket.forEach(async (basketItem) => {
-        await Item.updateOne({_id: basketItem.item}, {
-          $inc: { count: -basketItem.count }
-        })
+        await Item.updateOne(
+          { _id: basketItem.item },
+          {
+            $inc: { count: -basketItem.count },
+          }
+        );
 
-        await Item.updateOne({_id: basketItem.item, count: 0}, {
-          $set: { 'marcers.no': true }
-        })
+        await Item.updateOne(
+          { _id: basketItem.item, count: 0 },
+          {
+            $set: { "marcers.no": true },
+          }
+        );
         return basketItem;
       });
 
       // очистка корзины пользователя
       await Client.updateOne(
         {
-          _id: req.user_id
+          _id: req.user_id,
         },
-        {$set: {
-          basket: []
-        }}
-      )
+        {
+          $set: {
+            basket: [],
+          },
+        }
+      );
 
-      const promo = {}
-      if (promocode) promo.promocode = promocode
+      const promo = {};
+      if (promocode) promo.promocode = promocode;
 
       const data = await Order.create({
         ...promo,
@@ -103,7 +119,7 @@ OrderRouter.post(
         service,
         payment: payment ?? "656f32e18f35a7c471c6f566",
         delivery: delivery ?? "656f32878f35a7c471c6f558",
-        allPrice: allPrice - (allPrice * promoDiscount / 100),
+        allPrice: allPrice - (allPrice * promoDiscount) / 100,
         countItems,
         status: "655f6146a4d2868df197b7be",
       });
