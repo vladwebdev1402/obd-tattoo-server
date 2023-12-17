@@ -23,8 +23,20 @@ OrderRouter.get(
   "/order/all",
   AuthMiddleware(["DATABASE_ADMIN"], []),
   async (req, res) => {
-    const data = await Order.find();
-    return res.json({ data, message: "Заказы успешно получены" });
+    try {
+      const {start, end} = req.query;
+      const filter = {}
+      if (start && end) {
+        filter.date = { $and: [{date: {$gt: new Date(start)}}, {date: {$lt: new Date(end)}}] };
+      }
+      const data = await Order.find(filter.date);
+      return res.json({ data, message: "Заказы успешно получены" });
+    }
+    catch (error) {
+      console.log(error.message);
+      return res.json({ data: [], message: "Ошибка при получении заказов" });
+    }
+   
   }
 );
 
