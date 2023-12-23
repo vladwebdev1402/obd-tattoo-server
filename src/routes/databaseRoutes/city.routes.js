@@ -28,7 +28,7 @@ CityRouter.delete("/city",  AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, 
 })
 
 CityRouter.put("/city",  AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
-    const data = await City.findByIdAndUpdate(
+    await City.updateOne(
         {
             _id: req.body._id
         },
@@ -36,7 +36,8 @@ CityRouter.put("/city",  AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res
             name: req.body.name
         }}
     );
-    res.json({data, message: "Город успешно отредактирован"});
+  const data = await City.findOne({_id: req.body._id,})
+  res.json({data, message: "Город успешно отредактирован"});
 })
 
 

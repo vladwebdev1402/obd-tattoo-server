@@ -26,7 +26,7 @@ PaymentRouter.delete("/payment", AuthMiddleware(["DATABASE_ADMIN"], {}), async (
 
 PaymentRouter.put("/payment", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { name, promt } = req.body;
-  const data = await Payment.findOneAndUpdate(
+  await Payment.updateOne(
     {
       _id: req.body._id,
     },
@@ -37,6 +37,7 @@ PaymentRouter.put("/payment", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req
       },
     }
   );
+  const data = await Payment.findOne({_id: req.body._id,})
   return res.json({data, message: "Категория оплаты успешно обновлена"});
 });
 

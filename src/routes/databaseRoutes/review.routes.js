@@ -26,7 +26,7 @@ ReviewRouter.delete("/review", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}),
 
 ReviewRouter.put("/review", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
   const { client, description } = req.body;
-  const data = await Review.findOneAndUpdate(
+   await Review.updateOne(
     {
       _id: req.body._id,
     },
@@ -37,6 +37,7 @@ ReviewRouter.put("/review", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), as
       },
     }
   );
+  const data = await Review.findOne({ _id: req.body._id }); 
   return res.json({data, message: "Отзыв успешно отредактирован"});
 });
 

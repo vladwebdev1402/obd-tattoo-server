@@ -19,7 +19,7 @@ StreetRouter.post("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req,
 })
 
 StreetRouter.delete("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
-    const data = await Street.deleteOne().where(
+    const data = await Street.findOneAndDelete().where(
         {
             _id: req.body._id
         }
@@ -29,7 +29,7 @@ StreetRouter.delete("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (re
 
 StreetRouter.put("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
     const {name, city} = req.body;
-    const data = await Street.updateOne(
+    await Street.updateOne(
         {
             _id: req.body._id
         },
@@ -37,6 +37,7 @@ StreetRouter.put("/street", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, 
             name, city
         }}
     );
+    const data = await Street.findOne({_id: req.body._id})
     return res.json({data, message: "Улица успешно обновлена"});
 })
 

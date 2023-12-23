@@ -157,7 +157,7 @@ OrderRouter.put(
   async (req, res) => {
     const { basket, client, service, payment, delivery, promocode, status } =
       req.body;
-    const data = await Order.findOneAndUpdate(
+    await Order.updateOne(
       {
         _id: req.body._id,
       },
@@ -173,7 +173,8 @@ OrderRouter.put(
         },
       }
     );
-    return res.status(400).json({ data, message: "Заказ успешно обновлён" });
+    const data = await Order.findOne({_id: req.body._id,})
+    return res.status(200).json({ data, message: "Заказ успешно обновлён" });
   }
 );
 

@@ -26,7 +26,7 @@ DeliveryRouter.delete("/delivery", AuthMiddleware(["DATABASE_ADMIN"], {}), async
 
 DeliveryRouter.put("/delivery", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
   const { name, promt } = req.body;
-  const data = await Delivery.findOneAndUpdate(
+  await Delivery.updateOne(
     {
       _id: req.body._id,
     },
@@ -37,6 +37,8 @@ DeliveryRouter.put("/delivery", AuthMiddleware(["DATABASE_ADMIN"], {}), async (r
       },
     }
   );
+  const data = await Delivery.findOne({_id: req.body._id,})
+
   return res.json({data, message: "Категория доставки успешно обновлена"});
 
 });

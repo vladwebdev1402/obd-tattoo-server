@@ -1,11 +1,12 @@
 import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 import Manager from "../../model/ManagerModel.js";
 import { Router } from "express";
+import { ImageUrl } from "./ImageUrl.js";
 
 const ManagerRouter = Router();
 
 ManagerRouter.get("/manager", async (req, res) => {
-  const data = await Manager.find();
+  const data = await Manager.find({}, {login: 0, password: 0});
   return res.json({data, message: "Менеджеры успешно получены"});
 });
 
@@ -33,9 +34,9 @@ ManagerRouter.delete("/manager", AuthMiddleware(["DATABASE_ADMIN"], {}), async (
 });
 
 ManagerRouter.put("/manager", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
-    const { name, surname, patroname, mail, phone, viber, telegram, whatsapp } =
+    const { name, surname, patroname, mail, phone, viber, telegram, whatsapp, image } =
     req.body;
-  const data = await Manager.findOneAndUpdate(
+  await Manager.updateOne(
     {
       _id: req.body._id,
     },
@@ -49,9 +50,11 @@ ManagerRouter.put("/manager", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req
         viber,
         telegram,
         whatsapp,
+        image: ImageUrl + image
       },
     }
   );
+  const data = await Manager.findOne({_id: req.body._id,})
   return res.json({data, message: "Менеджер успешно обновлён"});
 });
 

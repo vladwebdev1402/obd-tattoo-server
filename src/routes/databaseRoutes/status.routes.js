@@ -28,7 +28,7 @@ StatusRouter.delete("/status", AuthMiddleware(["DATABASE_ADMIN"], {}), async (re
 })
 
 StatusRouter.put("/status", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
-    const data = await Status.findOneAndUpdate(
+    await Status.updateOne(
         {
             _id: req.body._id
         },
@@ -36,6 +36,7 @@ StatusRouter.put("/status", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, 
             name: req.body.name
         }}
     );
+    const data = await Status.findOne({_id: req.body._id})
     return res.json({data, message: "Статусы заказа успешно обновлён"});
 })
 

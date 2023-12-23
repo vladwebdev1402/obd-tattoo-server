@@ -33,7 +33,7 @@ ClientRouter.delete("/client", AuthMiddleware(["DATABASE_ADMIN"], {}), async (re
 ClientRouter.put("/client", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), async (req, res) => {
     const {_id, name, surname, patroname, phone, mail, 
         apartament, entrance, floor, intercom, city, street} = req.body
-    const data = await Client.findOneAndUpdate(
+    await Client.updateOne(
         {
             _id: _id ?? req.user_id,
           
@@ -43,6 +43,7 @@ ClientRouter.put("/client", AuthMiddleware(["DATABASE_ADMIN", "CLIENT"], {}), as
         apartament, entrance, floor, intercom, city, street
         }}
     );
+    const data = await Client.findOne({_id: _id ?? req.user_id,})
     return res.json({data, message: "Личный кабинет успешно отредактирован"});
 })
 

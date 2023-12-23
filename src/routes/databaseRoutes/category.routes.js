@@ -27,7 +27,7 @@ CategoryRouter.delete("/category", AuthMiddleware(["DATABASE_ADMIN"], {}), async
 })
 
 CategoryRouter.put("/category", AuthMiddleware(["DATABASE_ADMIN"], {}), async (req, res) => {
-    const data = await Category.findOneAndUpdate(
+    await Category.updateOne(
         {
             _id: req.body._id
         },
@@ -35,7 +35,8 @@ CategoryRouter.put("/category", AuthMiddleware(["DATABASE_ADMIN"], {}), async (r
             name: req.body.name
         }}
     );
-    return res.json({data, message: "Категория успешно обновлена"});
+  const data = await Category.findOne({_id: req.body._id,})
+  return res.json({data, message: "Категория успешно обновлена"});
 })
 
 
