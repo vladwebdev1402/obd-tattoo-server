@@ -1,5 +1,5 @@
 export const ItemFiltersMiddleware = (req, res, next) => {
-    const {_id, name, no, promotion, news, discount, hot, limit, startPrice, endPrice, category, brand} = req.query;
+    const {_id, name, no, promotion, news, discount, hot, limit, startPrice, endPrice, category, brand, sortField, sortOrder} = req.query;
 
     const mongoFilter = {
         name: {$regex: name ?? "", $options: 'i'},
@@ -16,11 +16,17 @@ export const ItemFiltersMiddleware = (req, res, next) => {
     if (discount) mongoFilter["marcers.discount"] = {$exists: true, $eq:  discount === 'true'};
     if (hot) mongoFilter["marcers.hot"] = {$exists: true, $eq:  hot === 'true'};
 
+    
+    const sort = {};
+
+    if (sortField && sortOrder) sort[sortField] = sortOrder;
+
     const filters = {
-        mongoFilter 
+        mongoFilter,
     };
 
     filters.limit = limit || 8;
+    if (Object.keys(sort).length > 0) filters.sort = sort;
 
     req.filters = filters;
     next();
