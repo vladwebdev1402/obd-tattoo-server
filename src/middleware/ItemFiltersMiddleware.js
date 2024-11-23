@@ -3,7 +3,7 @@ export const ItemFiltersMiddleware = (req, res, next) => {
 
     const mongoFilter = {
         name: {$regex: name ?? "", $options: 'i'},
-        $and: [{price: {$gte: Number(startPrice) || 0}}, {price: {$lte: Number(endPrice) || 999999}}],
+        $and: [{price: {$gte: Number(startPrice) || 0}}, {price: {$lte: Number(endPrice) >= Number(startPrice) && Number(endPrice) || 999999}}],
     }
 
     if (_id) mongoFilter._id = _id;
