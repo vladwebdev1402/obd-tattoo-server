@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    volumes:
+      - mongo:/data/db
+  server:
+    build: ./
+    restart: always
+    container_name: tattoo-server
+    volumes:
+      - ./images:/app/images
+      - images:/app/images
+    depends_on:
+      - mongodb
+    env_file:
+      - ./.env
+    ports:
+      - ${PORT}:${PORT}
+
+volumes:
+  mongo: ~
+  images: ~

@@ -11,7 +11,7 @@ ImageRouter.get("/image/:imagename", (req, res) => {
   const filePath = FileController.getRootDirname() + "/images/";
   if (fs.existsSync(filePath + imagename)) {
     res.download(filePath + imagename);
-  } else res.download(filePath + "/filed.png");
+  } else res.download(filePath + "filed.png");
 });
 
 ImageRouter.post(

@@ -7,10 +7,10 @@ import slugify from "slugify";
 
 export class FileController {
 
-    static  getRootDirname = () => {
+    static getRootDirname = () => {
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
-        return __dirname + "../../../";
+        return __dirname + "/../../";
     }
     
     static deleteFile = (urlFile) => {

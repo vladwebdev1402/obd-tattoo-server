@@ -1,2 +1,4 @@
-export const SECRET_KEY = "lpf823ks20jr3489jvpae84haw832rifvh83213"
-export const URI = "mongodb://127.0.0.1:27017/tattoo"
+export const DB_HOST = process.env.DB_HOST || "127.0.0.1"
+export const DB_NAME =  process.env.DB_NAME || "tattoo"
+export const SECRET_KEY = process.env.SECRET_KEY || "SECRET_KEY"
+export const URI = `mongodb://${DB_HOST}:27017/${DB_NAME}`
